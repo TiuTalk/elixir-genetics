@@ -1,0 +1,33 @@
+defmodule Portfolio do
+  @moduledoc false
+  @behaviour Problem
+
+  alias Types.Chromosome
+
+  @target_fitness 180
+
+  @impl true
+  def genotype do
+    genes = for _ <- 1..10, do: {:rand.uniform(10), :rand.uniform(10)}
+    %Chromosome{genes: genes, size: length(genes)}
+  end
+
+  @impl true
+  def fitness_function(chromosome) do
+    chromosome.genes
+    |> Enum.map(fn {roi, risk} -> 2 * roi - risk end)
+    |> Enum.sum()
+  end
+
+  @impl true
+  def terminate?(population, _generation, _temperature) do
+    max_value = Enum.max_by(population, &Portfolio.fitness_function/1)
+    max_value >= @target_fitness
+  end
+end
+
+solution = Genetic.run(Portfolio)
+
+IO.puts("Fitness: #{solution.fitness}")
+
+IO.inspect(solution)
