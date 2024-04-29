@@ -12,7 +12,7 @@ defmodule Genetic do
     for _ <- 1..population_size, do: genotype.()
   end
 
-  def evaluate(population, fitness_function, opts \\ []) do
+  def evaluate(population, fitness_function, _opts \\ []) do
     population
     |> Enum.map(fn chromosome ->
       fitness = fitness_function.(chromosome)
@@ -23,13 +23,13 @@ defmodule Genetic do
     |> Enum.sort_by(& &1.fitness, &>=/2)
   end
 
-  def select(population, opts \\ []) do
+  def select(population, _opts \\ []) do
     population
     |> Enum.chunk_every(2)
     |> Enum.map(&List.to_tuple(&1))
   end
 
-  def crossover(population, opts \\ []) do
+  def crossover(population, _opts \\ []) do
     population
     |> Enum.reduce([], fn {p1, p2}, acc ->
       cx_point = :rand.uniform(length(p1.genes))
@@ -39,7 +39,7 @@ defmodule Genetic do
     end)
   end
 
-  def mutate(population, opts \\ []) do
+  def mutate(population, _opts \\ []) do
     Enum.map(population, fn chromosome ->
       if :rand.uniform() < 0.05 do
         %{chromosome | genes: Enum.shuffle(chromosome.genes)}
