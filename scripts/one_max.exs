@@ -6,6 +6,7 @@ defmodule OneMax do
   @impl true
   def genotype do
     genes = Enum.map(1..42, fn _ -> Enum.random(0..1) end)
+
     %Chromosome{genes: genes, size: Enum.count(genes)}
   end
 
