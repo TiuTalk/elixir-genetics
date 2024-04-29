@@ -3,7 +3,7 @@ defmodule Genetic do
     population = initialize(&problem.genotype/0, opts)
 
     population
-    |> evolve(problem, opts)
+    |> evolve(problem, 0, opts)
   end
 
   def initialize(genotype, opts \\ []) do
@@ -49,20 +49,22 @@ defmodule Genetic do
     end)
   end
 
-  def evolve(population, problem, opts \\ []) do
+  def evolve(population, problem, generation, opts \\ []) do
     population = evaluate(population, &problem.fitness_function/1, opts)
     best = hd(population)
 
-    IO.puts "Fitness: #{best.fitness}"
+    IO.puts "Generation: #{generation} | Fitness: #{best.fitness}"
 
-    if problem.terminate?(population) do
+    if problem.terminate?(population, generation) do
       best
     else
+      generation = generation + 1
+
       population
       |> select(opts)
       |> crossover(opts)
       |> mutate(opts)
-      |> evolve(problem, opts)
+      |> evolve(problem, generation, opts)
     end
   end
 end
